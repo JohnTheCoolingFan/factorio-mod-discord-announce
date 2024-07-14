@@ -1,0 +1,30 @@
+name: 'Discord mod update notification'
+description: 'Publish a notification on Discord telling about new mode update'
+inputs:
+  changelog_file:
+    description: 'Changelog file'
+    required: true
+    default: 'changelog.txt'
+  info_json_file:
+    description: 'info.json file'
+    required: true
+    default: 'info.json'
+  discord_webhook:
+    description: 'Discord Webhook to use'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Set GitHub Path
+      run: echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
+      shell: bash
+      env:
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
+
+    - name: Send Discord Notification
+      run: announce.sh
+      shell: bash
+      env:
+        INFO_JSON_FILE: ${{ inputs.info_json_file }}
+        CHANGELOG_FILE: ${{ inputs.changelog_file }}
+        DISCORD_WEBHOOK: ${{ inputs.discord_webhook }}
